@@ -2,9 +2,8 @@ import "react";
 import logo from "../../assets/image/logo.png";
 import Input from "../ui/Input";
 // import { FormEvent, useEffect, useRef, useState } from "react";
-import {  useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-
 
 // import api from "../../service/api";
 import axios from "axios";
@@ -289,14 +288,14 @@ export default function SignUp() {
   // const [hasErrors,setHasError]=useState(false)
   const testSignUpWithEmail = async () => {
     const email = { email: emailRef.current?.value || "" };
-    setErrorEmail({email:""})
+    setErrorEmail({ email: "" });
     const newErrors: { email: string } = { email: "" };
 
     if (!email.email) {
       newErrors.email = "ایمیل نباید خالی باشد";
     }
 
-    const hasErrors=(Object.values(newErrors).some((value) => value !== ""));
+    const hasErrors = Object.values(newErrors).some((value) => value !== "");
 
     if (hasErrors) {
       setErrorEmail(newErrors);
@@ -306,7 +305,7 @@ export default function SignUp() {
     }
     console.log(email);
 
-    if(!hasErrors){
+    if (!hasErrors) {
       try {
         const res = await axios.post(
           "http://localhost:8000/cashflow/api/parent/signup/email/",
@@ -316,21 +315,19 @@ export default function SignUp() {
               "Content-Type": "application/json",
             },
           }
-          
         );
         setStep(2);
 
         console.log("Signup email response =>", res);
-  
+
         // ذخیره ایمیل برای مراحل بعد
         setSavedEmail(email.email);
 
         // رفتن به مرحله بعد بعد از موفقیت
       } catch (err) {
         console.log(err);
-  
-    }
-  
+      }
+
       // if (error.response) {
       //   // سرور یه پاسخ داده با یه status code که غیر از 2xx هست
       //   console.error("Server responded with error:", error.response.data);
@@ -347,7 +344,6 @@ export default function SignUp() {
       //   console.error("Error in setting up the request:", error.message);
       // }      }
     }
-
   };
 
   const codeRijestion = async () => {
@@ -422,7 +418,7 @@ export default function SignUp() {
   //   })
   // }
   const navigate = useNavigate();
-  
+
   const confirmHandel = async () => {
     const data2 = {
       username: usernameRef.current?.value,
@@ -462,9 +458,79 @@ export default function SignUp() {
     exit: { opacity: 0, x: -100 },
   };
   const [finish, setfinish] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className=" text-center place-items-center  h-full">
+      { step==1&& <motion.button
+      className="px-6 absolute top-5 left-2/5 py-3 bg-[#fca311] text-white rounded-2xl shadow-xl"
+      animate={{
+        scale: [1, 1.1, 1],
+      }}
+      transition={{
+        duration: 1,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }}
+    >
+      <button
+        onClick={() => setIsOpen(true)}
+        type="button"
+        // className="block absolute my-4 left-[167px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
+        بیشتر بدانید
+      </button>
+      </motion.button>}
+
+      {/* Modal */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="relative bg-white w-[400px] dark:bg-gray-700 rounded-lg shadow-lg  max-w-lg p-6">
+            {/* Header with close button */}
+            <div
+              dir="rtl"
+              className="flex justify-between  items-center mb-4 border-b border-gray-200 dark:border-gray-600 pb-2"
+            >
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                نحوه ثبت نام
+              </h2>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg p-1"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 14 14"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal body */}
+            <div className="text-gray-600 dark:text-gray-300  space-y-3 text-sm leading-relaxed">
+              <p>
+                اگر به عنوان والد وارد سایت شده اید ایتدا ثبت نام کنید سپس در
+                داشبورد خود فرزند یا فرزندانتان را عضو کنید
+              </p>
+              <p>
+                اگر نوجوانی 12تا18 ساله هستید از والدین خود بخواهید برایتان حساب
+                کاربری ایجاد کنند
+              </p>
+              <p>❤️❤️❤️😊🫶😊❤️❤️❤️</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="logo w-[270px] mt-20">
         <img src={logo} alt="" />
       </div>

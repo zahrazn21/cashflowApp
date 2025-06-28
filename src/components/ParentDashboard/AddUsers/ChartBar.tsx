@@ -1,4 +1,4 @@
-import * as React from 'react';
+import 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 
 export interface IncomeExpense {

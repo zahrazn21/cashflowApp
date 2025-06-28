@@ -1,4 +1,4 @@
-import React from "react";
+import  "react";
 import PieTrainChart from "./PieTrainChart";
 interface CategoryComparison {
   category: "نیازها" | "خواسته ها" | "سایر";

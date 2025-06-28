@@ -31,12 +31,14 @@ export default function Dashboard() {
 
   useEffect(() => {
     detailRequest();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (datacost) {
       setCategory();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datacost]);
 
   const detailRequest = async () => {
@@ -119,6 +121,7 @@ export default function Dashboard() {
     if (wants.length || needs.length || Else.length) {
       Percentage();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wants, needs, Else]);
 
   useEffect(() => {
@@ -156,6 +159,7 @@ export default function Dashboard() {
   };
   useEffect(() => {
     dashboardRequest();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

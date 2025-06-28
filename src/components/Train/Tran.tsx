@@ -1,4 +1,4 @@
-import React from "react";
+import "react";
 import DataBox from "./DataBox";
 import Video from "./TranVidep";
 import ChildFinancialData from "./TypeTeain";

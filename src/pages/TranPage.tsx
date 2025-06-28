@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from "react";
 import TrainBox from "../components/Train/TrainBox";
 import Train from "../components/Train/Tran";
 import api from "../service/api";
@@ -9,6 +10,7 @@ import { MdOutlineWallet } from "react-icons/md";
 export default function TranPage() {
   const childToken = localStorage.getItem("child_token_");
   const [income, setIncome] = useState(0);
+const [hasData, setHasData] = useState(false);
 
   const [amounts, setAmounts] = useState<{
     needs: number;
@@ -53,6 +55,8 @@ export default function TranPage() {
         wants: data.supposed_wants_amount,
         others: data.supposed_others_amount,
       });
+        setHasData(true);  // <-- این شرط مطلق
+
       console.log("response train", res);
     } catch (error) {
       console.log(error);
@@ -66,7 +70,7 @@ export default function TranPage() {
 
   return (
     <>
-      {dataTrain && dataTrain.length > 0 && income != 0 ? (
+      { hasData ?(
         <div className="[&::-webkit-scrollbar]:w-0 h-full overflow-y-auto place-items-center content-center py-2">
           <div className="place-content-center place-items-center mt-20 mb-10">
             <TrainBox income={income} amounts={amounts}></TrainBox>

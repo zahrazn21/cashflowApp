@@ -52,7 +52,6 @@ export default function ChildLogin() {
         return () => clearTimeout(timer);
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: unknown) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const error = err as AxiosError<any>;
@@ -90,6 +89,7 @@ export default function ChildLogin() {
     return () => {
       window.removeEventListener("keydown", handleEnter);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -98,7 +98,7 @@ export default function ChildLogin() {
         <img src={logo} alt="" />
       </div>
       <div className="h-[60%]  grid gap-4  place-items-center">
-        <p className="text-[#fca311]"> ورود</p>
+        <p className="text-[#fca311]"> ورود فرزند</p>
 
         <Input res={data[0]} ref={emailRef} err={error.email}></Input>
         <Input res={data[1]} ref={passRef} err={error.password}></Input>

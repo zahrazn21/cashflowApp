@@ -5,7 +5,15 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // vite.config.js
+server: {
+  proxy: {
+    "/api": "http://127.0.0.1:8000",
+  },
+}
+,
   plugins: [react(),tailwindcss(),
+    
     VitePWA({
     registerType: 'prompt',
     injectRegister: false,
@@ -20,6 +28,18 @@ export default defineConfig({
       short_name: 'cashflowApp',
       description: 'CashFlowApp',
       theme_color: '#ffffff',
+             icons: [
+          {
+            src: "/assets/logo-192.png",
+            sizes: "192x192",
+            type: "image/png"
+          },
+          {
+            src: "/assets/logo-512.png",
+            sizes: "512x512",
+            type: "image/png"
+          }
+        ]
     },
 
     workbox: {
@@ -29,10 +49,11 @@ export default defineConfig({
     },
 
     devOptions: {
-      enabled: false,
+      enabled: true,
       navigateFallback: 'index.html',
       suppressWarnings: true,
       type: 'module',
     },
+    
   })],
 })

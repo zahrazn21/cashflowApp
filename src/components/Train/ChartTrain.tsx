@@ -40,8 +40,9 @@ export default function ChartTrain({data}:amountsType) {
         },
       }}
       slotProps={{
-        legend: { hidden: true },
+        // legend: { hidden: true },
       }}
+      hideLegend
       width={200}
       height={150}
     />

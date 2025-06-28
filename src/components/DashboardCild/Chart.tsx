@@ -36,12 +36,13 @@ interface propType {
   sum?:number
 }
 
-export default function Chart({ amount , sum}: propType) {
+export default function Chart({ amount }: propType) {
   const desktopOS = [
-    { label: "خواسته ها", value:amount&&amount[0], color: "#8C1C13" },
-    { label: "نیاز ها", value: amount&&amount[1], color: "#FCA311" },
-    { label: "سایر", value: amount&&amount[2], color: "#FFEE32" },
-  ];
+  { label: "خواسته ها", value: amount?.[0] ?? 0, color: "#8C1C13" },
+  { label: "نیاز ها", value: amount?.[1] ?? 0, color: "#FCA311" },
+  { label: "سایر", value: amount?.[2] ?? 0, color: "#FFEE32" },
+];
+
 
   const valueFormatter = (item: { value: number }) => `${item.value}%`;
 

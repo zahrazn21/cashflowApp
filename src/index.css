@@ -2,6 +2,7 @@
 @import "tailwindcss";
 @import "flowbite/src/themes/default";
 @import "flowbite";
+/* @plugin "daisyui"; */
 
 @theme {
   --font-roboto: "Roboto", sans-serif; 

@@ -37,7 +37,7 @@ interface propType {
   category:string
 }
 
-export default function PieTrainChart({ amount, centerBox ,category}: propType) {
+export default function PieTrainChart({ amount, centerBox }: propType) {
     console.log("category:",centerBox);
 
   const desktopOS = [
@@ -53,6 +53,7 @@ export default function PieTrainChart({ amount, centerBox ,category}: propType) 
     <PieChart
       height={100}
       width={270}
+      hideLegend
       margin={{ top: 0, left: 0, right: 0, bottom: 30 }}
       series={[
         {
@@ -82,7 +83,6 @@ export default function PieTrainChart({ amount, centerBox ,category}: propType) 
           },
         },
         legend: {
-          hidden:true,
           direction: "vertical",
           position: {
             vertical: "middle",
@@ -93,6 +93,7 @@ export default function PieTrainChart({ amount, centerBox ,category}: propType) 
           },
         },
       }}
+
     >
       
       <PieCenterLabel>
@@ -120,4 +121,5 @@ export default function PieTrainChart({ amount, centerBox ,category}: propType) 
    
     </PieChart>
   );
+  
 }

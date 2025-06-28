@@ -1,16 +1,22 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import "react";
 import InputCost from "../components/Cost registration/InputCost";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { HiArrowTrendingUp } from "react-icons/hi2";
 import { HiArrowTrendingDown } from "react-icons/hi2";
 import api from "../service/api";
-import moment from "moment-jalaali";
+// import moment from "moment-jalaali";
 import { motion } from "framer-motion";
-// import DatePicker from "react-modern-calendar-datepicker";
-import { MdOutlinePayments  } from "react-icons/md";
+import { TiDeleteOutline } from "react-icons/ti";
 
+// import DatePicker from "react-modern-calendar-datepicker";
+import { MdOutlinePayments } from "react-icons/md";
+// import DatePicker from "react-multi-date-picker";
+import { Calendar, DateObject } from "react-multi-date-picker";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 // import axios from "axios";
 export interface costType {
   id: number;
@@ -26,13 +32,17 @@ interface dataFilterType {
   pertionTitle: string;
 }
 export default function CostRegistration() {
+  const [selectedDate, setSelectedDate] = useState<DateObject | null>(
+    new DateObject({ calendar: persian, locale: persian_fa })
+  );
+
   const dataFilter: dataFilterType[] = [
     { title: "all", pertionTitle: "همه" },
     { title: "day", pertionTitle: "امروز" },
     { title: "week", pertionTitle: "این هفته" },
     { title: "month", pertionTitle: "این ماه" },
   ];
-  const today = moment().format("jYYYY-jMM-jDD"); // تاریخ شمسی
+  // const today = moment().format("jYYYY-jMM-jDD"); // تاریخ شمسی
   const data = [
     { title: "توضیحات", type: "text" },
     { title: "مقدار هزینه", type: "text" },
@@ -57,8 +67,7 @@ export default function CostRegistration() {
   //   if (costRef.current) costRef.current.value = "";
 
   // };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [flash, setflash] = useState<ReactNode>(null);
+  const [, setflash] = useState<ReactNode>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const costRef = useRef<HTMLInputElement>(null);
 
@@ -79,6 +88,7 @@ export default function CostRegistration() {
     }
   };
 
+  const date = selectedDate && selectedDate;
   const costs = async () => {
     // const childToken = localStorage.getItem("child_token_");
 
@@ -89,7 +99,7 @@ export default function CostRegistration() {
       amount: Number(cost),
       cate_choices: category, // یا "wants" بسته به انتخاب
       description: title,
-      date: today,
+      date: date?.format("YYYY-MM-DD"),
       type: type,
       // child: 4,
     };
@@ -277,7 +287,16 @@ export default function CostRegistration() {
     setClickFilterMenu(false);
   };
 
+  const [calendar, setCalendar] = useState(false);
+  const showCalendar = () => {
+    if (calendar === false) {
+      setCalendar(true);
+    } else {
+      setCalendar(false);
+    }
+  };
 
+  
   // const [selectedDay, setSelectedDay] = useState(null);
   // useEffect(() => {
   //   const handleEnter = (e: KeyboardEvent) => {
@@ -298,8 +317,8 @@ export default function CostRegistration() {
     >
       <div className="grid bg-[oklch(0.96_0_0)] gap-8 h-[400px] place-content-center">
         <div className="grid gap-5 w-fit">
-          <InputCost ref={titleRef} res={data[0]}></InputCost>
           <InputCost ref={costRef} res={data[1]}></InputCost>
+          <InputCost ref={titleRef} res={data[0]}></InputCost>
         </div>
 
         <div className="flex justify-center">
@@ -309,6 +328,7 @@ export default function CostRegistration() {
             </label>
             <input
               onClick={() => (
+                setcategory("parent"),
                 setflash(
                   <div className="text-white">
                     <HiArrowTrendingUp></HiArrowTrendingUp>
@@ -334,6 +354,7 @@ export default function CostRegistration() {
                 //       ...prev,true
                 //     ]
                 //   ),
+                setcategory("needs"),
                 setflash(
                   <div className="text-[#fca311]">
                     <HiArrowTrendingDown></HiArrowTrendingDown>
@@ -350,9 +371,32 @@ export default function CostRegistration() {
         </div>
 
         <div className=" flex items-center w-full justify-evenly">
-          <div className="date border-2 text-[10px] w-[64px] bg-white h-[32px] text-center flex items-center justify-center border-[#fca311] rounded-[5px]">
-            {today}
+          <div
+            className="date border-2 text-[10px] w-[64px] bg-white h-[32px] text-center flex items-center justify-center border-[#fca311] rounded-[5px] cursor-pointer"
+            onClick={showCalendar}
+          >
+            {selectedDate && selectedDate.format()}
           </div>
+          {calendar && (
+            <div className="absolute z-50">
+              <Calendar
+                value={selectedDate}
+                onChange={(datenew: DateObject | null) => {
+                  setSelectedDate(datenew);
+                  setCalendar(false);
+                  // console.log("تاریخ انتخاب‌شده:", datenew&&datenew.format());
+                }}
+                calendar={persian}
+                locale={persian_fa}
+              />
+              <p
+                className=" absolute top-0  right-0 cursor-pointer text-red-600 rounded-full  flex items-center justify-center text-[20px] "
+                onClick={showCalendar}
+              >
+                <TiDeleteOutline />
+              </p>
+            </div>
+          )}
 
           {type == "income"}
           <div className="border-2   border-[#fca311] ring-0 rounded-[5px]">
@@ -491,24 +535,26 @@ export default function CostRegistration() {
                       <div className="text-[#fca311] font-display">
                         {res.amount}
                       </div>
-                      <div className="text-[10px] date">{res.date}</div>
+                      <div className="text-[10px] date ">{res.date}</div>
                     </div>
                   </li>
                 ))
               ) : (
                 <div className="content-center place-content-center place-self-center h-full ">
                   <div className="text-white  text-[50px] flex items-center justify-center">
-                    <MdOutlinePayments ></MdOutlinePayments >
+                    <MdOutlinePayments></MdOutlinePayments>
                   </div>
                   <p className="text-white my-4">ثبتی صورت نگرفته‌ است</p>
 
-                   { isScrolled&&<button
-                    onClick={()=>setIsScrolled(false)}
+                  {isScrolled && (
+                    <button
+                      onClick={() => setIsScrolled(false)}
                       type="button"
                       className="focus:outline-none text-[8px] bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-[18px] w-[100px] h-[35px] text-sm px-1 py-2.5   dark:focus:ring-yellow-900"
                     >
                       ثبت هزینه
-                    </button>}
+                    </button>
+                  )}
                 </div>
               )}
             </ul>

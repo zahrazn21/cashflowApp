@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import "react";
 import api from "../service/api";
 import {  useEffect, useState } from "react";
