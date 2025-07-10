@@ -43,7 +43,7 @@ export default function PieTrainChart({ amount, centerBox }: propType) {
   const desktopOS = [
     { label: `${100-amount[0]<0?"stack overflow":"خرج شده"}`, value: amount[0], color: amount[1] },
     // { label: "نیاز ها", value: amount, color: "#FCA311" },
-    { label: "باقی مانده", value: 100-(amount[0]), color: "#fca311" },
+    { label: "باقی مانده", value: 100-(amount[0]), color: "white" },
   ];
   
   // const valueFormatter = (item: { value: number }) => `${item.value}%`;

@@ -6,8 +6,10 @@ import { HiArrowTrendingUp } from "react-icons/hi2";
 import { HiArrowTrendingDown } from "react-icons/hi2";
 import api from "../service/api";
 // import moment from "moment-jalaali";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { TiDeleteOutline } from "react-icons/ti";
+import { CiEdit } from "react-icons/ci";
+import { RiDeleteBin2Line } from "react-icons/ri";
 
 // import DatePicker from "react-modern-calendar-datepicker";
 import { MdOutlinePayments } from "react-icons/md";
@@ -32,10 +34,28 @@ interface dataFilterType {
   pertionTitle: string;
 }
 export default function CostRegistration() {
+  const [deletId, setDeletId] = useState(0);
+  const [editInform, setEditInform] = useState<{
+    date: string;
+    description: string;
+    amount: string;
+    id: number;
+    cate_choices: string;
+    type: string;
+  }>({
+    date: "",
+    description: "",
+    amount: "",
+    id: 0,
+    cate_choices: "",
+    type: "",
+  });
   const [selectedDate, setSelectedDate] = useState<DateObject | null>(
     new DateObject({ calendar: persian, locale: persian_fa })
   );
-
+  const [selectedDateEdit, setSelectedDateEdit] = useState<
+    DateObject | null | string
+  >(editInform.date);
   const dataFilter: dataFilterType[] = [
     { title: "all", pertionTitle: "همه" },
     { title: "day", pertionTitle: "امروز" },
@@ -120,6 +140,41 @@ export default function CostRegistration() {
 
     if (titleRef.current) titleRef.current.value = "";
     if (costRef.current) costRef.current.value = "";
+  };
+
+  const deleteCost = async (id: number) => {
+
+    try {
+      const res = await api.delete(`costs/${id}/`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${childToken}`,
+        },
+      });
+
+      console.log("delet cost response:", res.data);
+      fetchData();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const updateCost = async (id: number) => {
+    try {
+      const res = await api.patch(`costs/${id}/`, editInform, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${childToken}`,
+        },
+      });
+      console.log("update cost response:", res);
+      fetchData(); // برای رفرش لیست
+      setIsOpen(false);
+      console.log("update cost 4545:", dataCost);
+    } catch (err) {
+      console.log(err);
+      alert("ویرایش هزینه با خطا مواجه شد!");
+    }
   };
   // const costs2 = async () => {
   //   const childToken = localStorage.getItem("child_token_");
@@ -288,6 +343,8 @@ export default function CostRegistration() {
   };
 
   const [calendar, setCalendar] = useState(false);
+  const [calendarEdit, setCalendarEdit] = useState(false);
+
   const showCalendar = () => {
     if (calendar === false) {
       setCalendar(true);
@@ -295,8 +352,14 @@ export default function CostRegistration() {
       setCalendar(false);
     }
   };
+  const showCalendarEdit = () => {
+    if (calendarEdit === false) {
+      setCalendarEdit(true);
+    } else {
+      setCalendarEdit(false);
+    }
+  };
 
-  
   // const [selectedDay, setSelectedDay] = useState(null);
   // useEffect(() => {
   //   const handleEnter = (e: KeyboardEvent) => {
@@ -310,6 +373,9 @@ export default function CostRegistration() {
   //     window.removeEventListener("keydown", handleEnter);
   //   };
   // }, []);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenDelet, setIsOpenDelet] = useState(false);
+
   return (
     <div
       className="w-full h-full scroll-auto overflow-visible"
@@ -378,7 +444,7 @@ export default function CostRegistration() {
             {selectedDate && selectedDate.format()}
           </div>
           {calendar && (
-            <div className="absolute z-50">
+            <div className={`absolute z-50 `}>
               <Calendar
                 value={selectedDate}
                 onChange={(datenew: DateObject | null) => {
@@ -476,11 +542,11 @@ export default function CostRegistration() {
         <div className="relative">
           <div
             onClick={filterMenu}
-            className={`border-[#fca311] border-2 absolute top-[-20px] right-[32%] z-[200]  w-[161px] bg-[#353535] text-white rounded-[8px] h-[39px] content-center place-content-center place-items-center`}
+            className={`border-[#fca311] border-2 absolute top-[-20px] right-[32%] z-30  w-[161px] bg-[#353535] text-white rounded-[8px] h-[39px] content-center place-content-center place-items-center`}
           >
             {showFilter}
           </div>
-          <div className=" top-[20px] right-[145px] z-50 flex items-center justify-center absolute">
+          <div className=" top-[20px] right-[145px] z-30 flex items-center justify-center absolute">
             {clickFilterMenu && (
               <div className="space-x-2 mb-4 bg-[#353535] rounded-[8px] border-2 border-[#fca311] w-[160px]">
                 {dataFilter.map((res, index) => (
@@ -515,9 +581,10 @@ export default function CostRegistration() {
                   <li
                     key={index}
                     dir="rtl"
-                    className="flex my-1 select-none bg-[#F9D87617] h-[57px] w-full items-center justify-around text-white"
+                    className="grid grid-cols-[150px_170px_30px_30px] my-3 px-2 gap-5 text-center text-white bg-[#F9D87617] h-[57px] w-full items-center"
+                    // className="flex my-1 place-content-evenly   columns- gap-8 select-none bg-[#F9D87617] h-[57px] w-full items-center justify-around text-white"
                   >
-                    <div className="right flex items-center">
+                    <div className="right flex items-center ">
                       <div className="ml-1 w-[26px]">
                         {res.type === "income" ? (
                           <div className="text-white">
@@ -533,9 +600,40 @@ export default function CostRegistration() {
                     </div>
                     <div className="left">
                       <div className="text-[#fca311] font-display">
-                        {res.amount}
+                        {Number(res.amount).toLocaleString()}
                       </div>
                       <div className="text-[10px] date ">{res.date}</div>
+                    </div>
+                    <div
+                      onClick={() => (
+                        setIsOpen(true),
+                        // setSelectedDateEdit(editInform.date),
+
+                        setEditInform({
+                          date: res.date,
+                          description: res.description,
+                          amount: res.amount,
+                          id: res.id,
+                          cate_choices: res.cate_choices,
+                          type: res.type,
+                        })
+                      )}
+                      className="text-[30px]  text-white cursor-pointer"
+                      // className="block absolute my-4 left-[167px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    >
+                      <CiEdit></CiEdit>
+                    </div>
+                    <div
+                      onClick={() => (
+                        setIsOpenDelet(true),
+                        // setSelectedDateEdit(editInform.date),
+
+                        setDeletId(res.id)
+                      )}
+                      className="text-[25px] text-white cursor-pointer"
+                      // className="block absolute my-4 left-[167px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    >
+                      <RiDeleteBin2Line></RiDeleteBin2Line>
                     </div>
                   </li>
                 ))
@@ -569,6 +667,299 @@ export default function CostRegistration() {
           </div>
         )} */}
       </div>
+      <AnimatePresence>
+        {isOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <motion.div
+              key="editModal" // کلید بده تا درست کار کنه
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.2, rotate: -20 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+            >
+              <div className="relative bg-white w-[400px] dark:bg-gray-700 rounded-lg shadow-lg  max-w-lg p-6">
+                {/* Header with close button */}
+                <div
+                  dir="rtl"
+                  className="flex justify-between  items-center mb-4 border-b border-gray-200 dark:border-gray-600 pb-2"
+                >
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    ویرایش
+                  </h2>
+
+                  <button
+                    onClick={() => (setIsOpen(false), setSelectedDateEdit(" "))}
+                    className="text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg p-1"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 14 14"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Modal body */}
+                <div className="content-center place-items-center  text-gray-600 dark:text-gray-300  space-y-6 text-sm leading-relaxed">
+                  <div
+                    dir="rtl"
+                    className="w-[267px] flex justify-center items-center border-b-2 border-amber-500"
+                  >
+                    <input
+                      value={editInform.description}
+                      onChange={(e) =>
+                        setEditInform({
+                          ...editInform,
+                          description: e.target.value,
+                        })
+                      }
+                      className="w-full bg-blend- bg-transparent font-display border-transparent focus:outline-none ring-0  outline-none"
+                    />{" "}
+                  </div>
+
+                  <div
+                    dir="rtl"
+                    className="w-[267px] flex justify-center items-center border-b-2 border-amber-500"
+                  >
+                    <input
+                      value={editInform.amount}
+                      onChange={(e) =>
+                        setEditInform({ ...editInform, amount: e.target.value })
+                      }
+                      className="w-full bg-blend- bg-transparent font-display border-transparent focus:outline-none ring-0  outline-none"
+                    />{" "}
+                  </div>
+
+                  {/* date and incpme&expense */}
+                  <div className="flex justify-center">
+                    <div className="me-4 flex items-center">
+                      <label
+                        htmlFor="yellow-radio "
+                        className="mx-2 text-[9px]"
+                      >
+                        درآمد
+                      </label>
+                      <input
+                        onClick={() => (
+                          setcategory("parent"),
+                          setflash(
+                            <div className="text-white">
+                              <HiArrowTrendingUp></HiArrowTrendingUp>
+                            </div>
+                          ),
+                          setType("income"),
+                          setEditInform({ ...editInform, type: "income" })
+                        )}
+                        name="default-radio"
+                        type="radio"
+                        id="yellow-radio"
+                        className="text-[#fca311] size-[20px] focus:ring-[#fca311] rounded-[15px]"
+                      />
+                    </div>
+                    <div className="me-4 flex items-center">
+                      <label
+                        htmlFor="yellow-radio "
+                        className="mx-2 text-[9px]"
+                      >
+                        برآمد
+                      </label>
+                      <input
+                        onClick={() => (
+                          setcategory("needs"),
+                          setflash(
+                            <div className="text-[#fca311]">
+                              <HiArrowTrendingDown></HiArrowTrendingDown>
+                            </div>
+                          ),
+                          setType("expense"),
+                          setEditInform({ ...editInform, type: "expense" })
+                        )}
+                        name="default-radio"
+                        type="radio"
+                        id="yellow-radio"
+                        className="text-[#fca311] size-[20px] focus:ring-[#fca311] rounded-[15px]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className=" flex items-center w-full justify-evenly">
+                    <div
+                      className="date border-2 text-[10px] w-[64px] bg-white h-[32px] text-center flex items-center justify-center border-[#fca311] rounded-[5px] cursor-pointer"
+                      onClick={showCalendarEdit}
+                    >
+                      {/* {selectedDate && selectedDateEdit.format()} */}
+                      {editInform?.date?.toString()}
+                    </div>
+                    {calendarEdit && (
+                      <div className="absolute z-50">
+                        <Calendar
+                          value={selectedDateEdit}
+                          onChange={(datenew: DateObject) => {
+                            setSelectedDateEdit(datenew);
+                            setEditInform({
+                              ...editInform,
+                              date: datenew.format("YYYY-MM-DD"),
+                            });
+
+                            setCalendarEdit(false);
+                            // console.log("تاریخ انتخاب‌شده:", datenew&&datenew.format());
+                          }}
+                          calendar={persian}
+                          locale={persian_fa}
+                        />
+                        <p
+                          className=" absolute top-0  right-0 cursor-pointer text-red-600 rounded-full  flex items-center justify-center text-[20px] "
+                          onClick={showCalendarEdit}
+                        >
+                          <TiDeleteOutline />
+                        </p>
+                      </div>
+                    )}
+
+                    {type == "income"}
+                    <div className="border-2   border-[#fca311] ring-0 rounded-[5px]">
+                      {type == "expense" ? (
+                        <select
+                          value={category}
+                          className="ring-0 text-center content-center border-none text-[10px] h-[30px] outline-0 rounded-[5px] py-0"
+                          onChange={(e) => {
+                            handleChange(e);
+                            setEditInform({
+                              ...editInform,
+                              cate_choices: e.target.value,
+                            });
+                          }}
+                          name=""
+                          id=""
+                        >
+                          <option className="h-[30px]" value="needs">
+                            نیازها
+                          </option>
+                          <option className="h-[30px]" value="wants">
+                            خواسته ها
+                          </option>
+                          <option className="h-[30px]" value="else">
+                            سایر موارد
+                          </option>
+                        </select>
+                      ) : (
+                        <select
+                          value={category}
+                          className="ring-0 text-center content-center border-none text-[10px] h-[30px] outline-0 rounded-[5px] py-0"
+                          onChange={(e) => {
+                            handleChange(e);
+                            setEditInform({
+                              ...editInform,
+                              cate_choices: e.target.value,
+                            });
+                          }}
+                          name=""
+                          id=""
+                        >
+                          <option className="h-[30px]" value="parent">
+                            پول تو جیبی
+                          </option>
+                          <option className="h-[30px]" value="part_time_job">
+                            کار نیمه وقت
+                          </option>
+                          <option className="h-[30px]" value="other">
+                            هدیه
+                          </option>
+                        </select>
+                      )}
+                    </div>
+                  </div>
+                  {/* end */}
+                  <button
+                    onClick={() => (
+                      updateCost(editInform.id), setSelectedDateEdit(" ")
+                    )}
+                    className="bg-[#fca311] text-white rounded-xl w-20"
+                  >
+                    ثبت
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isOpenDelet && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <motion.div
+              key="deleteModal" // کلید بده تا درست کار کنه
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.2, rotate: -20 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+            >
+              <div className="relative bg-white w-[400px] dark:bg-gray-700 rounded-lg shadow-lg  max-w-lg p-6">
+                {/* Header with close button */}
+                <div
+                  dir="rtl"
+                  className="flex justify-between  items-center mb-4 border-b border-gray-200 dark:border-gray-600 pb-2"
+                >
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    حذف
+                  </h2>
+
+                  <button
+                    onClick={() => setIsOpenDelet(false)}
+                    className="text-gray-400 hover:text-gray-900  hover:bg-gray-200  rounded-lg p-1 focus:outline-none active:border-none"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 14 14"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <p className="mb-10">آیا از حذف اطمینان دارید؟</p>
+                {/* Modal body */}
+                <div></div>
+                <div
+                  dir="rtl"
+                  className=" dark:text-gray-300   flex items-center justify-evenly
+                            leadig-relaxed"
+                >
+                  <button
+                    className="bg-emerald-900 rounded-xl text-white w-[110px]"
+                    onClick={() => (deleteCost(deletId), setIsOpenDelet(false))}
+                  >
+                    بله
+                  </button>
+                  <button
+                    className="bg-red-700 rounded-xl text-rose-50 w-[110px]"
+                    onClick={() => setIsOpenDelet(false)}
+                  >
+                    خیر
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

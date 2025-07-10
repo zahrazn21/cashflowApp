@@ -1,7 +1,8 @@
 import "react";
 import DataBox from "./DataBox";
-import Video from "./TranVidep";
+import Video from "./TrainVideo";
 import ChildFinancialData from "./TypeTeain";
+import { useAppContext } from "../ui/AppContext";
 
 interface propType {
   dataTrain: ChildFinancialData[];
@@ -45,12 +46,13 @@ export default function Train({ dataTrain }: propType) {
     );
   });
 
+  const {step}=useAppContext()
   return (
-    <div className="relative">
-      <div className="relative w-[360px] h-[504px]  border-[#353535] place-content-center place-items-center rounded-[46px] bg-white border-[3px]">
+    <div className={`relative`}>
+      <div className={`relative w-[360px] h-[504px]  border-[#353535] place-content-center place-items-center rounded-[46px] bg-white border-[3px]`}>
         {comparisonArray &&
           comparisonArray.map((res) => (
-            <div>
+           <div className={` ${step===5&&"z-30 relative"} `}>
               <DataBox res={res}></DataBox>
             </div>
           ))}
@@ -74,7 +76,7 @@ export default function Train({ dataTrain }: propType) {
           ></Video>
         </div>
       </div>
-      <div className="absolute bg-[#353535] items-center flex justify-center shadow-2xl z-20 w-[94.43395233154297px] h-[31.669921875px] rounded-[46px] border-white border-2 top-[-12px] left-[37%]">
+      <div className={`${step===5&&"z-30"} absolute bg-[#353535] items-center flex justify-center shadow-2xl z-20 w-[94.43395233154297px] h-[31.669921875px] rounded-[46px] border-white border-2 top-[-12px] left-[37%]`}>
         <p className="text-[#fca311] place-content-center text-[14px]">
           بررسی این ماه
         </p>

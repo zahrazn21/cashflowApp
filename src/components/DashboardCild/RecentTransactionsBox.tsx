@@ -59,7 +59,15 @@ export default function RecentTransaction({
                       <p className="mr-1">{res.description}</p>
                     </div>
 
-                    <p>تومان{res.amount}</p>
+                    <p>
+                      {
+                      Number(res.amount)<1000000?
+                                          `${( Number(res.amount)/1000).toLocaleString()} هزار تومان`
+                                            :
+                                          `${( Number(res.amount)/1000000).toLocaleString()} میلیون تومان`
+
+
+                      }</p>
                     <p>{res.cate_choices==="needs"? "نیازها": res.cate_choices==="wants"?"خواسته ها":"سایر"}</p>
 
 

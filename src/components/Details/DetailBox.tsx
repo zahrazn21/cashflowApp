@@ -94,7 +94,15 @@ export default function DetailBox({
                       <p className="mr-1">{res.description}</p>
                     </div>
 
-                    <p>تومان{res.amount}</p>
+                    <p>
+                {
+                  Number(res.amount)<1000000?
+                  `${(Number(res.amount)/1000).toLocaleString()} هزار تومن`:
+                  `${(Number(res.amount)/100000).toLocaleString()}میلیون تومن`
+                  
+                }
+
+                    </p>
                     <p>{res.date}</p>
                   </li>
                 ))}

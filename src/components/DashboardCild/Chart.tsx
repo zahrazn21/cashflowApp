@@ -38,8 +38,8 @@ interface propType {
 
 export default function Chart({ amount }: propType) {
   const desktopOS = [
-  { label: "خواسته ها", value: amount?.[0] ?? 0, color: "#8C1C13" },
   { label: "نیاز ها", value: amount?.[1] ?? 0, color: "#FCA311" },
+  { label: "خواسته ها", value: amount?.[0] ?? 0, color: "#8C1C13" },
   { label: "سایر", value: amount?.[2] ?? 0, color: "#FFEE32" },
 ];
 

@@ -7,6 +7,7 @@ import api from "../service/api";
 import handelError from "../components/ui/handelErrorLogin";
 import { AxiosError } from "axios";
 import FinishBox from "../components/ui/finishBox";
+import { useAppContext } from "../components/ui/AppContext";
 
 const data = [
   { title: "ایمیل", icon: "", type: "text" },
@@ -15,6 +16,8 @@ const data = [
 
 export default function ChildLogin() {
   const [serverError, serServerError] = useState("");
+    const {setUserName} = useAppContext();
+
   const [error, setError] = useState<{ email: string; password: string }>({
     email: "",
     password: "",
@@ -43,6 +46,7 @@ export default function ChildLogin() {
         console.log("resLogin", res.data);
         setError(res.data.message);
         setToken(res.data.token);
+        setUserName(res.data.child_username)
         localStorage.setItem("child_token_", res.data.token);
         setFinish(true);
         const timer = setTimeout(() => {

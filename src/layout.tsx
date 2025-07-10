@@ -1,5 +1,5 @@
 import "react";
-import Start from "./components/login/ParentLogin";
+import Start from "./pages/ParentLogin";
 
 export default function layout() {
   return (

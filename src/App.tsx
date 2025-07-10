@@ -1,21 +1,21 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import StartPage from "./pages/StartPage";
-import SignUp from "./components/signUp/SignUp";
+import SignUp from "./pages/ParentSignUp";
 import CostRegistration from "./pages/CostRegistration";
 import "flowbite";
 import LoginPage from "./pages/LoginPage";
 import ChildSignUp from "./pages/ChildSignUp";
-import ParentLogin from "./components/login/ParentLogin";
+import ParentLogin from "./pages/ParentLogin";
 import ChildLogin from "./pages/ChildLogin";
 import DetailsPage from "./pages/DetailsPage";
 import { useLocation } from "react-router-dom";
 
 import Header from "./components/ui/header";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/ChildDashboard";
 import { AppProvider } from "./components/ui/AppContext";
 import GoalPage from "./pages/GoalPage";
-import TranPage from "./pages/TranPage";
+import TranPage from "./pages/TrainPage";
 import AddUser from "./components/ParentDashboard/AddUsers/AddUser";
 import ParentDashboard from "./pages/ParentDashboard";
 import ParentHeader from "./components/ui/ParentHeader";

@@ -208,9 +208,13 @@ export default function Dashboard() {
         </div>
 
         <div className="place-content-center place-items-center">
-          <div className="text-[#fca311] text-[40px]">
+        
+              <div className="flex items-center">
+              <p>هدف های اخیر</p>
+              <p className="text-[#fca311]  my-1 text-[28px]">
             <PiPiggyBankLight></PiPiggyBankLight>
-          </div>
+              </p>
+            </div>
           <div className="bg-[#353535] w-[450px] h-[220px] place-content-center place-items-center">
             {goals && goals.length > 0 ? (
               <div className="flex items-center justify-between">

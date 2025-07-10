@@ -6,7 +6,7 @@ import { FaDeleteLeft } from "react-icons/fa6";
 import { GrTarget } from "react-icons/gr";
 
 import api from "../service/api";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 // import DatePicker from "react-modern-calendar-datepicker";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
 import ProgressBar from "../components/DashboardCild/ProgressBar";
@@ -239,6 +239,11 @@ export default function GoalPage() {
       currentRef.current.value = "";
     }
   };
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [idGoal, setIdGoal] = useState(0);
+  const [isOpenEdit, setIsOpenEdit] = useState(false);
+
   return (
     <div
       className="w-full h-full scroll-auto overflow-visible"
@@ -287,7 +292,7 @@ export default function GoalPage() {
                 className="text-[14px] cursor-pointer text-red-600 my-2"
                 onClick={() => registering()}
               >
-                ثبت هزینه
+                ثبت هدف
               </p>
             </div>
           )}
@@ -303,11 +308,11 @@ export default function GoalPage() {
         <div className="relative">
           <div
             onClick={filterMenu}
-            className={`border-[#fca311] border-2 absolute top-[-20px] right-[32%] z-[200]  w-[161px] bg-[#353535] text-white rounded-[8px] h-[39px] content-center place-content-center place-items-center`}
+            className={`border-[#fca311] border-2 absolute top-[-20px] right-[32%] z-30  w-[161px] bg-[#353535] text-white rounded-[8px] h-[39px] content-center place-content-center place-items-center`}
           >
             {showFilter}
           </div>
-          <div className=" top-[20px] right-[145px] z-50 flex items-center justify-center absolute">
+          <div className=" top-[20px] right-[145px] z-30 flex items-center justify-center absolute">
             {clickFilterMenu && (
               <div className="space-x-2 mb-4 bg-[#353535] rounded-[8px] border-2 border-[#fca311] w-[160px]">
                 {dataFilter.map((res, index) => (
@@ -345,7 +350,9 @@ export default function GoalPage() {
                   >
                     <p
                       className="text-white text-[20px]"
-                      onClick={() => DeletFunc(res.id)}
+                      onClick={() => (setIsOpen(true), setIdGoal(res.id))}
+
+                      // onClick={() => DeletFunc(res.id)}
                     >
                       <FaDeleteLeft></FaDeleteLeft>
                     </p>
@@ -386,6 +393,73 @@ export default function GoalPage() {
                 </div>
               )}
             </ul>
+            <AnimatePresence>
+              {isOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                  <motion.div
+                    key="deleteModal" // کلید بده تا درست کار کنه
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.2, rotate: -20 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                  >
+                    <div className="relative bg-white w-[400px] dark:bg-gray-700 rounded-lg shadow-lg  max-w-lg p-6">
+                      {/* Header with close button */}
+                      <div
+                        dir="rtl"
+                        className="flex justify-between  items-center mb-4 border-b border-gray-200 dark:border-gray-600 pb-2"
+                      >
+                        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                          حذف
+                        </h2>
+
+                        <button
+                          onClick={() => setIsOpen(false)}
+                          className="text-gray-400 hover:text-gray-900  hover:bg-gray-200  rounded-lg p-1 focus:outline-none active:border-none"
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            viewBox="0 0 14 14"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                      <p className="mb-10">آیا از حذف اطمینان دارید؟</p>
+                      {/* Modal body */}
+                      <div></div>
+                      <div
+                        dir="rtl"
+                        className=" dark:text-gray-300   flex items-center justify-evenly
+                            leadig-relaxed"
+                      >
+                        <button
+                          className="bg-emerald-900 rounded-xl text-white w-[110px]"
+                          onClick={() => (DeletFunc(idGoal), setIsOpen(false))}
+                        >
+                          بله
+                        </button>
+                        <button
+                          className="bg-red-700 rounded-xl text-rose-50 w-[110px]"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          خیر
+                        </button>
+                        {/* <p>❤️❤️❤️😊🫶😊❤️❤️❤️</p> */}
+                      </div>
+                    </div>
+                  </motion.div>
+                </div>
+              )}
+            </AnimatePresence>
           </div>
         </motion.div>
       </div>

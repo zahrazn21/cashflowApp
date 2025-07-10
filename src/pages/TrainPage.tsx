@@ -1,16 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import TrainBox from "../components/Train/TrainBox";
-import Train from "../components/Train/Tran";
+import Train from "../components/Train/TraIn";
 import api from "../service/api";
 import ChildFinancialData from "../components/Train/TypeTeain";
 import ChartTrain from "../components/Train/ChartTrain";
 import { MdOutlineWallet } from "react-icons/md";
+import { useAppContext } from "../components/ui/AppContext";
 
 export default function TranPage() {
   const childToken = localStorage.getItem("child_token_");
   const [income, setIncome] = useState(0);
-const [hasData, setHasData] = useState(false);
+// const [hasData, setHasData] = useState(false);
 
   const [amounts, setAmounts] = useState<{
     needs: number;
@@ -32,6 +33,8 @@ const [hasData, setHasData] = useState(false);
 
       const data = res.data;
 
+      console.log("res data",data);
+      
       const trainData: ChildFinancialData = {
         income: data.income,
         needs: data.needs,
@@ -55,7 +58,7 @@ const [hasData, setHasData] = useState(false);
         wants: data.supposed_wants_amount,
         others: data.supposed_others_amount,
       });
-        setHasData(true);  // <-- این شرط مطلق
+        // setHasData(true);  // <-- این شرط مطلق
 
       console.log("response train", res);
     } catch (error) {
@@ -67,11 +70,16 @@ const [hasData, setHasData] = useState(false);
   }, []);
 
   console.log("Train main:", dataTrain);
+    console.log("amounts data:", amounts);
 
+
+    const {step}=useAppContext()
   return (
     <>
-      { hasData ?(
-        <div className="[&::-webkit-scrollbar]:w-0 h-full overflow-y-auto place-items-center content-center py-2">
+      {  amounts.needs>0 ||amounts.others>0 ||amounts.wants>0||dataTrain[0]?.needs!=0  ?(
+        <div className={`
+        ${step<10?"overflow-hidden":" [&::-webkit-scrollbar]:w-0  overflow-y-auto"}
+        h-full place-items-center content-center py-2`}>
           <div className="place-content-center place-items-center mt-20 mb-10">
             <TrainBox income={income} amounts={amounts}></TrainBox>
           </div>

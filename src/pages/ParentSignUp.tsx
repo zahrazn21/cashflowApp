@@ -1,9 +1,10 @@
 import "react";
-import logo from "../../assets/image/logo.png";
-import Input from "../ui/Input";
+import logo from "../../src/assets/image/logo.png";
+import Input from "../components/ui/Input";
 // import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { FaRegQuestionCircle } from "react-icons/fa";
 
 // import api from "../../service/api";
 import axios from "axios";
@@ -11,7 +12,7 @@ import { MdOutlinePersonOutline } from "react-icons/md";
 import { MdOutlineMail } from "react-icons/md";
 import { MdLockOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import FinishBox from "../ui/finishBox";
+import FinishBox from "../components/ui/finishBox";
 
 axios.defaults.withCredentials = true;
 
@@ -462,25 +463,26 @@ export default function SignUp() {
 
   return (
     <div className=" text-center place-items-center  h-full">
-      { step==1&& <motion.button
-      className="px-6 absolute top-5 left-2/5 py-3 bg-[#fca311] text-white rounded-2xl shadow-xl"
-      animate={{
-        scale: [1, 1.1, 1],
-      }}
-      transition={{
-        duration: 1,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }}
-    >
-      <button
-        onClick={() => setIsOpen(true)}
-        type="button"
-        // className="block absolute my-4 left-[167px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-      >
-        بیشتر بدانید
-      </button>
-      </motion.button>}
+      {step == 1 && (
+        <motion.div
+          animate={{
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 1,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          <div
+            onClick={() => setIsOpen(true)}
+            className="text-[#fca311] my-4  text-[30px] cursor-pointer"
+            // className="block absolute my-4 left-[167px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            <FaRegQuestionCircle></FaRegQuestionCircle>
+          </div>
+        </motion.div>
+      )}
 
       {/* Modal */}
       {isOpen && (
@@ -518,14 +520,14 @@ export default function SignUp() {
             {/* Modal body */}
             <div className="text-gray-600 dark:text-gray-300  space-y-3 text-sm leading-relaxed">
               <p>
-                اگر به عنوان والد وارد سایت شده اید ایتدا ثبت نام کنید سپس در
+                اگر به عنوان والد وارد سایت شده اید ابتدا ثبت نام کنید سپس در
                 داشبورد خود فرزند یا فرزندانتان را عضو کنید
               </p>
               <p>
                 اگر نوجوانی 12تا18 ساله هستید از والدین خود بخواهید برایتان حساب
                 کاربری ایجاد کنند
               </p>
-              <p>❤️❤️❤️😊🫶😊❤️❤️❤️</p>
+              <p>😉👍</p>
             </div>
           </div>
         </div>
